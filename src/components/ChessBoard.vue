@@ -16,7 +16,21 @@
         <h2>{{ currentTurnText }}</h2>
         <div class="status" :class="statusClass">{{ statusText }}</div>
       </div>
-      <button class="reset-button" @click="resetGame">Новая игра</button>
+      <div class="game-controls">
+        <button class="control-button undo-button" @click="undoMove" :disabled="!canUndo">
+          ↶ Отменить ход
+        </button>
+        <button class="control-button save-button" @click="saveGame">
+          💾 Сохранить
+        </button>
+        <button class="control-button load-button" @click="loadGame">
+          📂 Загрузить
+        </button>
+        <button class="control-button sound-button" @click="toggleSound">
+          {{ soundEnabled ? '🔊' : '🔇' }} Звук
+        </button>
+        <button class="reset-button" @click="resetGame">Новая игра</button>
+      </div>
     </div>
 
     <div class="game-layout">
@@ -83,8 +97,9 @@ import { ref, computed, onMounted } from 'vue';
 import ChessSquare from './ChessSquare.vue';
 import GameSettings from './GameSettings.vue';
 import MoveHistory from './MoveHistory.vue';
-import { Game } from '@/game/Game';
+import { Game, SavedGame } from '@/game/Game';
 import { Piece, Position } from '@/types';
+import { soundManager } from '@/utils/sounds';
 
 const game = ref<Game>(new Game());
 const board = ref<(Piece | null)[][]>(game.value.getBoard());
@@ -97,8 +112,11 @@ const boardSize = ref(80);
 const showCoordinates = ref(true);
 const showMoveHints = ref(true);
 const highlightLastMove = ref(true);
+const soundEnabled = ref(true);
 
 const moveHistory = computed(() => game.value.getMoveHistory());
+
+const canUndo = computed(() => game.value.canUndo());
 
 const currentTurnText = computed(() => {
   return game.value.getCurrentTurn() === 'white' ? 'Ход белых' : 'Ход черных';
@@ -158,6 +176,10 @@ const handleSquareClick = (row: number, col: number): void => {
 
   if (selectedSquare.value) {
     // Попытка сделать ход
+    const previousStatus = game.value.getStatus();
+    const targetPiece = board.value[row][col];
+    const movingPiece = board.value[selectedSquare.value.row][selectedSquare.value.col];
+    
     const moveSuccess = game.value.makeMove(selectedSquare.value, { row, col });
     
     if (moveSuccess) {
@@ -165,6 +187,18 @@ const handleSquareClick = (row: number, col: number): void => {
         from: { ...selectedSquare.value },
         to: { row, col }
       };
+      
+      // Воспроизводим соответствующий звук
+      if (game.value.getStatus() === 'check' || game.value.getStatus() === 'checkmate') {
+        soundManager.playCheck();
+      } else if (movingPiece?.type === 'king' && Math.abs(selectedSquare.value.col - col) === 2) {
+        soundManager.playCastle();
+      } else if (targetPiece) {
+        soundManager.playCapture();
+      } else {
+        soundManager.playMove();
+      }
+      
       selectedSquare.value = null;
       validMoves.value = [];
       board.value = game.value.getBoard();
@@ -195,6 +229,9 @@ const handleDragStart = (row: number, col: number): void => {
 const handleDrop = (row: number, col: number): void => {
   if (!selectedSquare.value) return;
 
+  const targetPiece = board.value[row][col];
+  const movingPiece = board.value[selectedSquare.value.row][selectedSquare.value.col];
+  
   const moveSuccess = game.value.makeMove(selectedSquare.value, { row, col });
   
   if (moveSuccess) {
@@ -202,6 +239,17 @@ const handleDrop = (row: number, col: number): void => {
       from: { ...selectedSquare.value },
       to: { row, col }
     };
+    
+    // Воспроизводим соответствующий звук
+    if (game.value.getStatus() === 'check' || game.value.getStatus() === 'checkmate') {
+      soundManager.playCheck();
+    } else if (movingPiece?.type === 'king' && Math.abs(selectedSquare.value.col - col) === 2) {
+      soundManager.playCastle();
+    } else if (targetPiece) {
+      soundManager.playCapture();
+    } else {
+      soundManager.playMove();
+    }
   }
 
   selectedSquare.value = null;
@@ -210,15 +258,67 @@ const handleDrop = (row: number, col: number): void => {
 };
 
 const resetGame = (): void => {
-  game.value.reset();
-  board.value = game.value.getBoard();
-  selectedSquare.value = null;
-  validMoves.value = [];
-  lastMove.value = null;
+  if (confirm('Вы уверены, что хотите начать новую игру?')) {
+    game.value.reset();
+    board.value = game.value.getBoard();
+    selectedSquare.value = null;
+    validMoves.value = [];
+    lastMove.value = null;
+  }
+};
+
+const undoMove = (): void => {
+  if (game.value.undo()) {
+    board.value = game.value.getBoard();
+    selectedSquare.value = null;
+    validMoves.value = [];
+    lastMove.value = null;
+  }
+};
+
+const saveGame = (): void => {
+  try {
+    const savedGame = game.value.saveGame();
+    const jsonString = JSON.stringify(savedGame);
+    localStorage.setItem('chess-saved-game', jsonString);
+    alert('Игра успешно сохранена!');
+  } catch (error) {
+    console.error('Error saving game:', error);
+    alert('Ошибка при сохранении игры');
+  }
+};
+
+const loadGame = (): void => {
+  try {
+    const jsonString = localStorage.getItem('chess-saved-game');
+    if (!jsonString) {
+      alert('Нет сохраненной игры');
+      return;
+    }
+    
+    if (confirm('Загрузить сохраненную игру? Текущая игра будет потеряна.')) {
+      const savedGame: SavedGame = JSON.parse(jsonString);
+      game.value.loadGame(savedGame);
+      board.value = game.value.getBoard();
+      selectedSquare.value = null;
+      validMoves.value = [];
+      lastMove.value = null;
+      alert('Игра успешно загружена!');
+    }
+  } catch (error) {
+    console.error('Error loading game:', error);
+    alert('Ошибка при загрузке игры');
+  }
+};
+
+const toggleSound = (): void => {
+  soundEnabled.value = !soundEnabled.value;
+  soundManager.setEnabled(soundEnabled.value);
 };
 
 onMounted(() => {
   board.value = game.value.getBoard();
+  soundManager.setEnabled(soundEnabled.value);
 });
 </script>
 
@@ -238,7 +338,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   gap: 2rem;
 }
 
@@ -272,22 +372,71 @@ onMounted(() => {
   color: #95a5a6;
 }
 
+.game-controls {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.control-button {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.control-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.control-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.undo-button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.save-button {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.load-button {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.sound-button {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
 .reset-button {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  font-weight: bold;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
 .reset-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
 }
 
 .reset-button:active {
@@ -417,6 +566,24 @@ onMounted(() => {
   .game-info {
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .game-controls {
+    justify-content: center;
+  }
+
+  .control-button, .reset-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
   }
 }
 </style>
