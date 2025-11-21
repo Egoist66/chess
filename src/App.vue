@@ -21,7 +21,7 @@ import ChessBoard from './components/ChessBoard.vue';
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #e8dcc4;
   min-height: 100vh;
 }
 
@@ -33,18 +33,18 @@ body {
 .app-header {
   text-align: center;
   padding: 2rem;
-  color: white;
+  color: #3d2817;
 }
 
 .app-header h1 {
   font-size: 3.5rem;
   margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .app-header p {
   font-size: 1.2rem;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 </style>
 

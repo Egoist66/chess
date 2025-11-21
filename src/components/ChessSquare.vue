@@ -137,18 +137,15 @@ export default { name: 'ChessSquare' };
   user-select: none;
   cursor: grab;
   transition: transform 0.2s ease, filter 0.2s ease;
-  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
   text-shadow: 
-    1px 1px 2px rgba(255, 255, 255, 0.3),
-    -1px -1px 2px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent);
-  -webkit-background-clip: text;
-  background-clip: text;
+    1px 1px 1px rgba(255, 255, 255, 0.2),
+    -1px -1px 1px rgba(0, 0, 0, 0.15);
 }
 
 .piece:hover {
-  transform: scale(1.15) translateY(-2px);
-  filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));
+  transform: scale(1.1) translateY(-1px);
+  filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.4));
 }
 
 .piece:active {
@@ -158,7 +155,7 @@ export default { name: 'ChessSquare' };
 
 .piece.dragging {
   opacity: 0.5;
-  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.5));
 }
 
 .move-indicator {

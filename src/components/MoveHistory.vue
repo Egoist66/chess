@@ -74,7 +74,8 @@ const formatMove = (move: Move): string => {
 
 <style scoped>
 .move-history-panel {
-  background: white;
+  background: #f5f0e8;
+  border: 2px solid #d4c4a8;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -85,7 +86,7 @@ const formatMove = (move: Move): string => {
 
 .panel-header {
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #5d4a37;
   color: white;
   cursor: pointer;
   display: flex;
@@ -95,7 +96,7 @@ const formatMove = (move: Move): string => {
 }
 
 .panel-header:hover {
-  background: linear-gradient(135deg, #7688eb 0%, #8555b3 100%);
+  background: #6b5a47;
 }
 
 .panel-header h3 {
@@ -129,18 +130,18 @@ const formatMove = (move: Move): string => {
 }
 
 .moves-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #8b6f47;
   border-radius: 4px;
 }
 
 .moves-content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #5566d9 0%, #653991 100%);
+  background: #6b5a47;
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #95a5a6;
+  color: #7a6c5d;
   font-style: italic;
 }
 
@@ -167,7 +168,7 @@ const formatMove = (move: Move): string => {
 
 .move-number {
   font-weight: bold;
-  color: #667eea;
+  color: #8b6f47;
   min-width: 30px;
   font-size: 0.95rem;
 }
@@ -184,14 +185,14 @@ const formatMove = (move: Move): string => {
 
 .white-move {
   background: white;
-  color: #2c3e50;
-  border: 2px solid #dee2e6;
+  color: #3d2817;
+  border: 2px solid #d4c4a8;
 }
 
 .black-move {
-  background: #2c3e50;
+  background: #3d2817;
   color: white;
-  border: 2px solid #2c3e50;
+  border: 2px solid #3d2817;
 }
 
 .move-notation {

@@ -176,7 +176,6 @@ const handleSquareClick = (row: number, col: number): void => {
 
   if (selectedSquare.value) {
     // Попытка сделать ход
-    const previousStatus = game.value.getStatus();
     const targetPiece = board.value[row][col];
     const movingPiece = board.value[selectedSquare.value.row][selectedSquare.value.col];
     
@@ -349,7 +348,7 @@ onMounted(() => {
 .turn-indicator h2 {
   margin: 0;
   font-size: 2rem;
-  color: #2c3e50;
+  color: #3d2817;
 }
 
 .status {
@@ -364,12 +363,12 @@ onMounted(() => {
 }
 
 .status-checkmate {
-  color: #ee5a6f;
+  color: #c1440e;
   font-size: 1.8rem;
 }
 
 .status-stalemate {
-  color: #95a5a6;
+  color: #7a6c5d;
 }
 
 .game-controls {
@@ -406,37 +405,37 @@ onMounted(() => {
 }
 
 .undo-button {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: #8b6f47;
 }
 
 .save-button {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #6b8e23;
 }
 
 .load-button {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: #cd853f;
 }
 
 .sound-button {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  background: #a0826d;
 }
 
 .reset-button {
   padding: 0.7rem 1.2rem;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #5d4a37;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(93, 74, 55, 0.4);
 }
 
 .reset-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 4px 12px rgba(93, 74, 55, 0.6);
 }
 
 .reset-button:active {
@@ -452,15 +451,16 @@ onMounted(() => {
 .captured-pieces {
   width: 150px;
   padding: 1rem;
-  background: white;
+  background: #f5f0e8;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #d4c4a8;
 }
 
 .captured-pieces h3 {
   margin: 0 0 1rem 0;
   font-size: 1rem;
-  color: #2c3e50;
+  color: #3d2817;
 }
 
 .pieces-list {
@@ -489,7 +489,7 @@ onMounted(() => {
 .chess-board {
   display: flex;
   flex-direction: column;
-  border: 4px solid #2c3e50;
+  border: 4px solid #5d4a37;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -511,7 +511,7 @@ onMounted(() => {
 
 .coordinates {
   display: flex;
-  color: #2c3e50;
+  color: #5d4a37;
   font-weight: bold;
   font-size: 1rem;
 }

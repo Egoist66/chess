@@ -132,7 +132,8 @@ const updateHighlightLastMove = () => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: white;
+  background: #f5f0e8;
+  border: 2px solid #d4c4a8;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   z-index: 1000;
@@ -152,7 +153,7 @@ const updateHighlightLastMove = () => {
   width: 40px;
   height: 40px;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #5d4a37;
   color: white;
   border-radius: 50%;
   cursor: pointer;
@@ -161,13 +162,14 @@ const updateHighlightLastMove = () => {
   justify-content: center;
   font-size: 1.2rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(93, 74, 55, 0.3);
   z-index: 10;
 }
 
 .toggle-button:hover {
   transform: scale(1.1) rotate(90deg);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  background: #6b5a47;
+  box-shadow: 0 6px 16px rgba(93, 74, 55, 0.5);
 }
 
 .settings-content {
@@ -177,7 +179,7 @@ const updateHighlightLastMove = () => {
 
 .settings-content h3 {
   margin: 0 0 1.5rem 0;
-  color: #2c3e50;
+  color: #3d2817;
   font-size: 1.4rem;
 }
 
@@ -194,7 +196,7 @@ const updateHighlightLastMove = () => {
 
 .label-text {
   font-size: 1rem;
-  color: #2c3e50;
+  color: #3d2817;
   font-weight: 500;
 }
 
@@ -208,7 +210,7 @@ const updateHighlightLastMove = () => {
   flex: 1;
   height: 6px;
   border-radius: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #8b6f47;
   outline: none;
   -webkit-appearance: none;
 }
@@ -220,14 +222,14 @@ const updateHighlightLastMove = () => {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #667eea;
+  border: 3px solid #8b6f47;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.4);
 }
 
 .slider::-moz-range-thumb {
@@ -235,21 +237,21 @@ const updateHighlightLastMove = () => {
   height: 20px;
   border-radius: 50%;
   background: white;
-  border: 3px solid #667eea;
+  border: 3px solid #8b6f47;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .slider::-moz-range-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.4);
 }
 
 .slider-value {
   min-width: 50px;
   text-align: right;
   font-weight: 600;
-  color: #667eea;
+  color: #5d4a37;
 }
 
 .checkbox {
@@ -257,7 +259,7 @@ const updateHighlightLastMove = () => {
   height: 20px;
   margin-right: 0.5rem;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #8b6f47;
 }
 
 .setting-label:has(.checkbox) {

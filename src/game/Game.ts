@@ -1,5 +1,11 @@
 import { Board } from './Board';
 import { Piece, Position, PieceColor, Move } from '@/types';
+import { Pawn } from '@/pieces/Pawn';
+import { Rook } from '@/pieces/Rook';
+import { Knight } from '@/pieces/Knight';
+import { Bishop } from '@/pieces/Bishop';
+import { Queen } from '@/pieces/Queen';
+import { King } from '@/pieces/King';
 
 export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate';
 
@@ -270,14 +276,6 @@ export class Game {
 
   private createPieceFromData(data: any): Piece | null {
     const { type, color, position, hasMoved } = data;
-    
-    // Импортируем классы фигур
-    const { Pawn } = require('@/pieces/Pawn');
-    const { Rook } = require('@/pieces/Rook');
-    const { Knight } = require('@/pieces/Knight');
-    const { Bishop } = require('@/pieces/Bishop');
-    const { Queen } = require('@/pieces/Queen');
-    const { King } = require('@/pieces/King');
 
     let piece: Piece | null = null;
 
