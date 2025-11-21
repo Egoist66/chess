@@ -1,5 +1,14 @@
 <template>
   <div class="chess-container">
+    <SavedGamesManager
+      :is-open="showSavedGamesModal"
+      :mode="savedGamesMode"
+      :current-game-state="currentGameState"
+      @close="closeSavedGamesModal"
+      @save="handleGameSaved"
+      @load="handleGameLoaded"
+    />
+    
     <GameSettings
       :board-size="boardSize"
       :show-coordinates="showCoordinates"
@@ -97,6 +106,7 @@ import { ref, computed, onMounted } from 'vue';
 import ChessSquare from './ChessSquare.vue';
 import GameSettings from './GameSettings.vue';
 import MoveHistory from './MoveHistory.vue';
+import SavedGamesManager from './SavedGamesManager.vue';
 import { Game, SavedGame } from '@/game/Game';
 import { Piece, Position } from '@/types';
 import { soundManager } from '@/utils/sounds';
@@ -113,6 +123,11 @@ const showCoordinates = ref(true);
 const showMoveHints = ref(true);
 const highlightLastMove = ref(true);
 const soundEnabled = ref(true);
+
+// Saved games modal
+const showSavedGamesModal = ref(false);
+const savedGamesMode = ref<'save' | 'load'>('save');
+const currentGameState = computed(() => game.value.saveGame());
 
 const moveHistory = computed(() => game.value.getMoveHistory());
 
@@ -276,37 +291,31 @@ const undoMove = (): void => {
 };
 
 const saveGame = (): void => {
-  try {
-    const savedGame = game.value.saveGame();
-    const jsonString = JSON.stringify(savedGame);
-    localStorage.setItem('chess-saved-game', jsonString);
-    alert('Игра успешно сохранена!');
-  } catch (error) {
-    console.error('Error saving game:', error);
-    alert('Ошибка при сохранении игры');
-  }
+  savedGamesMode.value = 'save';
+  showSavedGamesModal.value = true;
 };
 
 const loadGame = (): void => {
-  try {
-    const jsonString = localStorage.getItem('chess-saved-game');
-    if (!jsonString) {
-      alert('Нет сохраненной игры');
-      return;
-    }
-    
-    if (confirm('Загрузить сохраненную игру? Текущая игра будет потеряна.')) {
-      const savedGame: SavedGame = JSON.parse(jsonString);
-      game.value.loadGame(savedGame);
-      board.value = game.value.getBoard();
-      selectedSquare.value = null;
-      validMoves.value = [];
-      lastMove.value = null;
-      alert('Игра успешно загружена!');
-    }
-  } catch (error) {
-    console.error('Error loading game:', error);
-    alert('Ошибка при загрузке игры');
+  savedGamesMode.value = 'load';
+  showSavedGamesModal.value = true;
+};
+
+const closeSavedGamesModal = (): void => {
+  showSavedGamesModal.value = false;
+};
+
+const handleGameSaved = (name: string): void => {
+  alert(`Партия "${name}" успешно сохранена!`);
+};
+
+const handleGameLoaded = (savedGame: SavedGame): void => {
+  if (confirm('Загрузить выбранную партию? Текущая игра будет потеряна.')) {
+    game.value.loadGame(savedGame);
+    board.value = game.value.getBoard();
+    selectedSquare.value = null;
+    validMoves.value = [];
+    lastMove.value = null;
+    alert('Партия успешно загружена!');
   }
 };
 
